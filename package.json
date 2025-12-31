@@ -15,6 +15,6 @@
     "typescript": "^5.0.0"
   },
   "scripts": {
-    "build": "postcss index.css -o dist/index.css"
+    "build": "postcss index.css -o index.css"
   }
 }
