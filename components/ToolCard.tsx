@@ -1,15 +1,14 @@
 
 import React, { useState } from 'react';
-import { ExternalLink, Shield, Zap, ChevronRight, BrainCircuit, Copy, Check, Eye, Code2, Globe, Boxes, Tag } from 'lucide-react';
+import { ExternalLink, Shield, Zap, ChevronRight, Copy, Check, Eye, Code2, Globe, Boxes, Tag } from 'lucide-react';
 import { Tool } from '../types';
 
 interface ToolCardProps {
   tool: Tool;
-  onAgentify: (tool: Tool) => void;
   onViewDetails: (tool: Tool) => void;
 }
 
-export const ToolCard: React.FC<ToolCardProps> = ({ tool, onAgentify, onViewDetails }) => {
+export const ToolCard: React.FC<ToolCardProps> = ({ tool, onViewDetails }) => {
   const [copied, setCopied] = useState(false);
 
   const copyUrl = (e: React.MouseEvent) => {
@@ -55,11 +54,6 @@ export const ToolCard: React.FC<ToolCardProps> = ({ tool, onAgentify, onViewDeta
                 </span>
               )}
             </div>
-            {tool.agentStrategy && (
-              <div className="flex items-center gap-1.5 text-[8px] sm:text-[9px] font-black text-blue-600 bg-blue-50/80 backdrop-blur-sm px-2 sm:px-2.5 py-0.5 sm:py-1 rounded-lg border border-blue-100 uppercase tracking-tight shadow-sm animate-pulse-slow shrink-0">
-                <BrainCircuit size={10} className="text-blue-500" /> Agent-Ready
-              </div>
-            )}
           </div>
         </div>
 
@@ -86,26 +80,15 @@ export const ToolCard: React.FC<ToolCardProps> = ({ tool, onAgentify, onViewDeta
             <span className="px-1.5 py-1 text-slate-400 text-[9px] sm:text-[10px] font-bold flex items-center">+{tool.frameworks.length - 3}</span>
           )}
         </div>
-
-        <button 
-          onClick={() => onViewDetails(tool)}
-          className="group/btn flex items-center gap-2 sm:gap-3 text-[10px] sm:text-xs font-black text-slate-900 hover:text-blue-600 transition-all py-2"
-        >
-          <div className="bg-slate-100 group-hover/btn:bg-blue-600 group-hover/btn:text-white p-1.5 rounded-lg transition-all shadow-sm">
-            <Eye size={12} className="text-slate-500 group-hover/btn:text-white sm:w-[14px] sm:h-[14px]" />
-          </div>
-          <span className="tracking-tight">Technical Specification</span>
-          <ChevronRight size={14} className="opacity-0 -translate-x-2 group-hover/btn:opacity-100 group-hover/btn:translate-x-0 transition-all duration-300 text-blue-600 sm:w-[16px] sm:h-[16px]" />
-        </button>
       </div>
 
       <div className="p-6 sm:p-8 pt-0 mt-auto flex flex-col gap-3 sm:gap-4">
         <button 
-          onClick={() => onAgentify(tool)}
+          onClick={() => onViewDetails(tool)}
           className="w-full bg-slate-900 text-white py-3 sm:py-4 rounded-xl sm:rounded-2xl font-black text-xs sm:text-sm flex items-center justify-center gap-2 sm:gap-3 hover:bg-blue-600 transition-all duration-300 active:scale-[0.97] shadow-lg sm:shadow-xl shadow-slate-200 group-hover:shadow-blue-200"
         >
-          <BrainCircuit size={16} className="text-blue-400 group-hover:text-white transition-colors sm:w-[18px] sm:h-[18px]" />
-          Build AI Agent
+          <Eye size={16} className="text-blue-400 group-hover:text-white transition-colors sm:w-[18px] sm:h-[18px]" />
+          View Tech Specs
         </button>
         
         <div className="flex items-center gap-2 sm:gap-3">
@@ -115,7 +98,7 @@ export const ToolCard: React.FC<ToolCardProps> = ({ tool, onAgentify, onViewDeta
             rel="noopener noreferrer"
             className="flex-grow text-center bg-slate-50 text-slate-500 hover:text-blue-600 hover:bg-white hover:border-blue-200 py-2.5 sm:py-3 rounded-xl sm:rounded-2xl text-[10px] sm:text-[11px] font-black flex items-center justify-center gap-1.5 sm:gap-2 border border-slate-100 transition-all shadow-sm"
           >
-            Visit Hub <ExternalLink size={12} />
+            Visit Website <ExternalLink size={12} />
           </a>
           <button 
             onClick={copyUrl}

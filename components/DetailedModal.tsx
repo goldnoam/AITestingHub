@@ -1,6 +1,6 @@
 
 import React, { useMemo } from 'react';
-import { X, ExternalLink, Shield, Zap, Info, Terminal, BrainCircuit, Globe, Layers, Cpu, CheckCircle2, Tag, Link2, Mail, LayoutGrid } from 'lucide-react';
+import { X, ExternalLink, Shield, Zap, Info, Terminal, BrainCircuit, Globe, Layers, Cpu, CheckCircle2, Tag, Link2, Mail, LayoutGrid, Scale } from 'lucide-react';
 import { Tool } from '../types';
 import { TOOLS } from '../data';
 
@@ -20,6 +20,9 @@ export const DetailedModal: React.FC<DetailedModalProps> = ({ tool, onClose, onR
       t.tags.some(tag => tool.tags.includes(tag))
     )).slice(0, 3);
   }, [tool]);
+
+  // Comparison logic for "Key Features"
+  const comparisonTools = relatedTools.slice(0, 2);
 
   return (
     <div className="fixed inset-0 z-50 flex items-center justify-center p-4">
@@ -41,7 +44,7 @@ export const DetailedModal: React.FC<DetailedModalProps> = ({ tool, onClose, onR
           
           <h2 className="text-4xl font-black mb-4 flex items-baseline gap-3">
             {tool.name}
-            {tool.version && <span className="text-sm font-bold opacity-60">Version {tool.version}</span>}
+            {tool.version && <span className="text-sm font-bold opacity-60">v{tool.version}</span>}
           </h2>
           
           <div className="flex flex-wrap gap-2 mb-4">
@@ -61,9 +64,6 @@ export const DetailedModal: React.FC<DetailedModalProps> = ({ tool, onClose, onR
               >
                 Visit Official Website <ExternalLink size={14} />
               </a>
-              <div className="px-4 py-2 bg-black/10 backdrop-blur-sm rounded-xl font-bold text-sm border border-white/20 flex items-center gap-2">
-                {tool.isPaid ? 'Enterprise Subscription' : 'Open-Source Project'}
-              </div>
           </div>
         </div>
 
@@ -78,11 +78,71 @@ export const DetailedModal: React.FC<DetailedModalProps> = ({ tool, onClose, onR
             </p>
           </section>
 
+          {/* Key Features & Capability Comparison */}
+          <section className="bg-slate-50 rounded-[2rem] p-6 border border-slate-100">
+            <h3 className="text-xs font-black text-slate-400 uppercase tracking-widest mb-6 flex items-center gap-2">
+              <Scale size={14} className="text-blue-600" /> Key Features Comparison
+            </h3>
+            
+            <div className="overflow-x-auto">
+              <table className="w-full text-left text-sm">
+                <thead>
+                  <tr className="border-b border-slate-200">
+                    <th className="pb-3 font-black text-slate-400 uppercase text-[10px] tracking-tight w-1/3">Feature Set</th>
+                    <th className="pb-3 font-black text-blue-600 uppercase text-[10px] tracking-tight text-center">{tool.name}</th>
+                    {comparisonTools.map(ct => (
+                      <th key={ct.id} className="pb-3 font-black text-slate-600 uppercase text-[10px] tracking-tight text-center">{ct.name}</th>
+                    ))}
+                  </tr>
+                </thead>
+                <tbody className="divide-y divide-slate-100">
+                  <tr>
+                    <td className="py-4 font-bold text-slate-900">License</td>
+                    <td className="py-4 text-center">
+                      <span className={`px-2 py-0.5 rounded-md text-[10px] font-black ${tool.isPaid ? 'bg-indigo-100 text-indigo-700' : 'bg-emerald-100 text-emerald-700'}`}>
+                        {tool.isPaid ? 'PAID' : 'OSS'}
+                      </span>
+                    </td>
+                    {comparisonTools.map(ct => (
+                      <td key={ct.id} className="py-4 text-center">
+                        <span className={`px-2 py-0.5 rounded-md text-[10px] font-black ${ct.isPaid ? 'bg-indigo-100 text-indigo-700' : 'bg-emerald-100 text-emerald-700'}`}>
+                          {ct.isPaid ? 'PAID' : 'OSS'}
+                        </span>
+                      </td>
+                    ))}
+                  </tr>
+                  <tr>
+                    <td className="py-4 font-bold text-slate-900">Ecosystem</td>
+                    <td className="py-4 text-center text-xs text-slate-500 font-medium">{tool.frameworks.slice(0, 2).join(', ')}</td>
+                    {comparisonTools.map(ct => (
+                      <td key={ct.id} className="py-4 text-center text-xs text-slate-500 font-medium">{ct.frameworks.slice(0, 2).join(', ')}</td>
+                    ))}
+                  </tr>
+                  <tr>
+                    <td className="py-4 font-bold text-slate-900">Core Traits</td>
+                    <td className="py-4">
+                      <div className="flex flex-wrap justify-center gap-1">
+                        {tool.tags.slice(0, 2).map(t => <span key={t} className="text-[9px] bg-white border border-slate-200 px-1 rounded text-slate-400 font-bold">{t}</span>)}
+                      </div>
+                    </td>
+                    {comparisonTools.map(ct => (
+                      <td key={ct.id} className="py-4">
+                        <div className="flex flex-wrap justify-center gap-1">
+                          {ct.tags.slice(0, 2).map(t => <span key={t} className="text-[9px] bg-white border border-slate-200 px-1 rounded text-slate-400 font-bold">{t}</span>)}
+                        </div>
+                      </td>
+                    ))}
+                  </tr>
+                </tbody>
+              </table>
+            </div>
+          </section>
+
           {/* Technical Specs Visualization */}
           <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
             <section className="bg-slate-50 rounded-3xl p-6 border border-slate-100">
               <h3 className="text-xs font-black text-slate-400 uppercase tracking-widest mb-4 flex items-center gap-2">
-                <Cpu size={14} /> Ecosystem Support
+                <Cpu size={14} /> Full Ecosystem Support
               </h3>
               <div className="flex flex-wrap gap-2">
                 {tool.frameworks.map(fw => (
@@ -96,7 +156,7 @@ export const DetailedModal: React.FC<DetailedModalProps> = ({ tool, onClose, onR
 
             <section className="bg-slate-50 rounded-3xl p-6 border border-slate-100">
               <h3 className="text-xs font-black text-slate-400 uppercase tracking-widest mb-4 flex items-center gap-2">
-                <Terminal size={14} /> Interaction Pattern
+                <Terminal size={14} /> Usage Pattern
               </h3>
               <div className="space-y-3">
                 <div className="flex items-start gap-3">
@@ -107,15 +167,15 @@ export const DetailedModal: React.FC<DetailedModalProps> = ({ tool, onClose, onR
             </section>
           </div>
 
-          {/* Agentification Roadmap */}
+          {/* Deployment / Integration Strategy */}
           <section className="bg-gradient-to-br from-blue-50 to-indigo-50 rounded-[2rem] p-8 border border-blue-100">
             <div className="flex items-center gap-3 mb-6">
               <div className="bg-blue-600 p-2 rounded-xl text-white shadow-lg shadow-blue-200">
-                <BrainCircuit size={20} />
+                <Layers size={20} />
               </div>
               <div>
-                <h3 className="text-xl font-black text-slate-900">Agentification Roadmap</h3>
-                <p className="text-xs font-bold text-blue-600 uppercase tracking-wider">Turning automation into autonomy</p>
+                <h3 className="text-xl font-black text-slate-900">Integration Strategy</h3>
+                <p className="text-xs font-bold text-blue-600 uppercase tracking-wider">Enterprise Implementation Guide</p>
               </div>
             </div>
             <div className="bg-white/80 backdrop-blur p-6 rounded-2xl border border-blue-100 text-slate-700 leading-relaxed font-medium shadow-inner">
@@ -127,7 +187,7 @@ export const DetailedModal: React.FC<DetailedModalProps> = ({ tool, onClose, onR
           {relatedTools.length > 0 && (
             <section>
               <h3 className="text-xs font-black text-slate-400 uppercase tracking-widest mb-6 flex items-center gap-2">
-                <LayoutGrid size={14} /> Related Tools in this Category
+                <LayoutGrid size={14} /> Similar Alternatives
               </h3>
               <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
                 {relatedTools.map(rt => (
@@ -168,7 +228,7 @@ export const DetailedModal: React.FC<DetailedModalProps> = ({ tool, onClose, onR
                 rel="noopener noreferrer"
                 className="w-full md:w-auto px-10 py-4 bg-blue-600 hover:bg-blue-500 text-white rounded-2xl font-black text-sm flex items-center justify-center gap-3 transition-all shadow-xl shadow-blue-900/40"
               >
-                Visit Website <ExternalLink size={18} />
+                Visit Hub <ExternalLink size={18} />
               </a>
             </div>
           </section>

@@ -3,7 +3,6 @@ import React, { useState, useMemo } from 'react';
 import { Header } from './components/Header';
 import { FilterBar } from './components/FilterBar';
 import { ToolCard } from './components/ToolCard';
-import { AgentModal } from './components/AgentModal';
 import { DetailedModal } from './components/DetailedModal';
 import { InfographicSummary } from './components/InfographicSummary';
 import { TOOLS } from './data';
@@ -17,14 +16,12 @@ const App: React.FC = () => {
     pricing: 'All',
     selectedTags: [],
   });
-  const [agentifyTool, setAgentifyTool] = useState<Tool | null>(null);
   const [detailsTool, setDetailsTool] = useState<Tool | null>(null);
 
   const filteredTools = useMemo(() => {
     return TOOLS.filter(tool => {
       const searchLower = filters.search.toLowerCase();
       
-      // Advanced text search covers name, desc, frameworks, tags, and agent strategy
       const matchesSearch = 
         !filters.search ||
         tool.name.toLowerCase().includes(searchLower) ||
@@ -40,7 +37,6 @@ const App: React.FC = () => {
         (filters.pricing === 'Free/OS' && tool.isOpenSource) ||
         (filters.pricing === 'Paid' && tool.isPaid);
 
-      // Intersection logic: The tool must match ALL selected tags or frameworks
       const matchesTags = 
         filters.selectedTags.length === 0 || 
         filters.selectedTags.every(tag => 
@@ -53,7 +49,6 @@ const App: React.FC = () => {
 
   const handleRelatedToolClick = (tool: Tool) => {
     setDetailsTool(tool);
-    // Optionally also scroll to top of modal if needed, but react state change handles it
   };
 
   return (
@@ -88,7 +83,7 @@ const App: React.FC = () => {
           
           <div className="flex items-center gap-3">
             <div className="hidden lg:flex items-center gap-2 px-4 py-2 bg-blue-50 text-blue-700 rounded-xl text-[10px] font-black uppercase border border-blue-100">
-               <Sparkles size={14} /> Agent Ready Catalog
+               <Sparkles size={14} /> Production Ready Catalog
             </div>
           </div>
         </div>
@@ -99,7 +94,6 @@ const App: React.FC = () => {
               <ToolCard 
                 key={tool.id} 
                 tool={tool} 
-                onAgentify={setAgentifyTool} 
                 onViewDetails={setDetailsTool}
               />
             ))}
@@ -133,7 +127,7 @@ const App: React.FC = () => {
              </div>
              <div>
                 <h4 className="font-black text-slate-900 text-sm">Tester Tools Hub</h4>
-                <p className="text-[10px] font-bold text-slate-400 uppercase tracking-widest">Active Intelligence: Gemini 3 Flash</p>
+                <p className="text-[10px] font-bold text-slate-400 uppercase tracking-widest">Version 2.0 - Production Refactor</p>
              </div>
           </div>
           <div className="flex flex-col items-center gap-2">
@@ -155,11 +149,6 @@ const App: React.FC = () => {
         </div>
       </footer>
 
-      {/* Modals */}
-      <AgentModal 
-        tool={agentifyTool} 
-        onClose={() => setAgentifyTool(null)} 
-      />
       <DetailedModal 
         tool={detailsTool} 
         onClose={() => setDetailsTool(null)} 
