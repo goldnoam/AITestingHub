@@ -1,15 +1,17 @@
 
 import React, { useState } from 'react';
-import { ExternalLink, Shield, Zap, ChevronRight, Copy, Check, Eye, Code2, Globe, Boxes, Tag } from 'lucide-react';
+import { ExternalLink, Shield, Zap, ChevronRight, Copy, Check, Eye, Code2, Globe, Boxes, Tag, BrainCircuit, Sparkles } from 'lucide-react';
 import { Tool } from '../types';
 
 interface ToolCardProps {
   tool: Tool;
   onViewDetails: (tool: Tool) => void;
+  onOpenAgent: (tool: Tool) => void;
 }
 
-export const ToolCard: React.FC<ToolCardProps> = ({ tool, onViewDetails }) => {
+export const ToolCard: React.FC<ToolCardProps> = ({ tool, onViewDetails, onOpenAgent }) => {
   const [copied, setCopied] = useState(false);
+  const [showStrategyPreview, setShowStrategyPreview] = useState(false);
 
   const copyUrl = (e: React.MouseEvent) => {
     e.stopPropagation();
@@ -42,6 +44,13 @@ export const ToolCard: React.FC<ToolCardProps> = ({ tool, onViewDetails }) => {
           </div>
           
           <div className="flex flex-row sm:flex-col items-center sm:items-end gap-2 w-full sm:w-auto flex-wrap">
+            <button 
+              onClick={() => setShowStrategyPreview(!showStrategyPreview)}
+              className={`p-2 rounded-xl border transition-all duration-300 ${showStrategyPreview ? 'bg-blue-600 text-white border-blue-600 shadow-lg' : 'bg-white text-blue-600 border-blue-100 hover:bg-blue-50'}`}
+              title="Agent Strategy Preview"
+            >
+              <BrainCircuit size={18} />
+            </button>
             <div className="flex gap-1.5">
               {tool.isOpenSource && (
                 <span className="px-2 py-0.5 sm:px-2.5 sm:py-1 bg-emerald-50 text-emerald-700 text-[8px] sm:text-[9px] font-black rounded-lg border border-emerald-100 uppercase tracking-tight shadow-sm shrink-0">
@@ -57,9 +66,27 @@ export const ToolCard: React.FC<ToolCardProps> = ({ tool, onViewDetails }) => {
           </div>
         </div>
 
-        <p className="text-slate-600 text-xs sm:text-sm mb-6 leading-relaxed line-clamp-3 sm:line-clamp-2 font-medium">
-          {tool.description}
-        </p>
+        {showStrategyPreview ? (
+          <div className="mb-6 p-4 bg-blue-50/50 border border-blue-100 rounded-2xl animate-in slide-in-from-top-2 duration-300">
+            <div className="flex items-center gap-2 mb-2">
+              <Sparkles size={14} className="text-blue-500" />
+              <span className="text-[10px] font-black text-blue-700 uppercase tracking-widest">Strategy Preview</span>
+            </div>
+            <p className="text-slate-600 text-xs leading-relaxed italic mb-3">
+              "{tool.agentStrategy.substring(0, 100)}..."
+            </p>
+            <button 
+              onClick={() => onOpenAgent(tool)}
+              className="text-[10px] font-black text-blue-600 hover:text-blue-800 flex items-center gap-1 uppercase tracking-tight"
+            >
+              Expand to Full Blueprint <ChevronRight size={12} />
+            </button>
+          </div>
+        ) : (
+          <p className="text-slate-600 text-xs sm:text-sm mb-6 leading-relaxed line-clamp-3 sm:line-clamp-2 font-medium">
+            {tool.description}
+          </p>
+        )}
 
         <div className="flex flex-wrap gap-1.5 sm:gap-2 mb-5">
           {tool.tags.map(tag => (

@@ -4,6 +4,7 @@ import { Header } from './components/Header';
 import { FilterBar } from './components/FilterBar';
 import { ToolCard } from './components/ToolCard';
 import { DetailedModal } from './components/DetailedModal';
+import { AgentModal } from './components/AgentModal';
 import { InfographicSummary } from './components/InfographicSummary';
 import { TOOLS } from './data';
 import { FilterState, Tool } from './types';
@@ -17,6 +18,7 @@ const App: React.FC = () => {
     selectedTags: [],
   });
   const [detailsTool, setDetailsTool] = useState<Tool | null>(null);
+  const [agentTool, setAgentTool] = useState<Tool | null>(null);
 
   const filteredTools = useMemo(() => {
     return TOOLS.filter(tool => {
@@ -51,6 +53,10 @@ const App: React.FC = () => {
     setDetailsTool(tool);
   };
 
+  const handleOpenAgent = (tool: Tool) => {
+    setAgentTool(tool);
+  };
+
   return (
     <div className="min-h-screen pb-20 bg-[#fafafa]">
       <Header />
@@ -83,7 +89,7 @@ const App: React.FC = () => {
           
           <div className="flex items-center gap-3">
             <div className="hidden lg:flex items-center gap-2 px-4 py-2 bg-blue-50 text-blue-700 rounded-xl text-[10px] font-black uppercase border border-blue-100">
-               <Sparkles size={14} /> Production Ready Catalog
+               <Sparkles size={14} /> AI Testing Directory
             </div>
           </div>
         </div>
@@ -95,6 +101,7 @@ const App: React.FC = () => {
                 key={tool.id} 
                 tool={tool} 
                 onViewDetails={setDetailsTool}
+                onOpenAgent={handleOpenAgent}
               />
             ))}
           </div>
@@ -127,7 +134,7 @@ const App: React.FC = () => {
              </div>
              <div>
                 <h4 className="font-black text-slate-900 text-sm">Tester Tools Hub</h4>
-                <p className="text-[10px] font-bold text-slate-400 uppercase tracking-widest">Version 2.0 - Production Refactor</p>
+                <p className="text-[10px] font-bold text-slate-400 uppercase tracking-widest">Version 2.0 - Active Reference</p>
              </div>
           </div>
           <div className="flex flex-col items-center gap-2">
@@ -142,7 +149,7 @@ const App: React.FC = () => {
             </a>
           </div>
           <div className="flex gap-4">
-            <a href="https://www.linkedin.com/in/noamgold/" target="_blank" className="p-3 bg-white border border-slate-200 rounded-2xl text-slate-500 hover:text-blue-600 transition-all hover:-translate-y-1 shadow-sm">
+            <a href="https://www.linkedin.com/in/noamgold/" target="_blank" rel="noopener noreferrer" className="p-3 bg-white border border-slate-200 rounded-2xl text-slate-500 hover:text-blue-600 transition-all hover:-translate-y-1 shadow-sm">
               <Linkedin size={20} />
             </a>
           </div>
@@ -153,6 +160,11 @@ const App: React.FC = () => {
         tool={detailsTool} 
         onClose={() => setDetailsTool(null)} 
         onRelatedToolClick={handleRelatedToolClick}
+      />
+
+      <AgentModal 
+        tool={agentTool}
+        onClose={() => setAgentTool(null)}
       />
     </div>
   );
