@@ -11,12 +11,13 @@
     "tailwindcss": "^3.4.0",
     "autoprefixer": "^10.4.0",
     "postcss": "^8.4.0",
-    "postcss-cli": "^11.0.0"
+    "postcss-cli": "^11.0.0",
+    "esbuild": "^0.24.0"
   },
   "devDependencies": {
     "typescript": "^5.0.0"
   },
   "scripts": {
-    "build": "postcss index.css -o index.css"
+    "build": "postcss tailwind.css -o index.css && esbuild index.tsx --bundle --outfile=index.js --format=esm --minify --external:react --external:react-dom --external:lucide-react"
   }
 }
