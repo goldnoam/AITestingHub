@@ -24,7 +24,6 @@ export interface Tool {
   isOpenSource: boolean;
   agentStrategy: string;
   version?: string;
-  logo?: string;
 }
 
 export interface FilterState {

@@ -24,8 +24,8 @@ export const ToolCard: React.FC<ToolCardProps> = ({ tool, onViewDetails, onOpenA
   };
 
   return (
-    <div 
-      className={`rounded-[2.5rem] border transition-all duration-500 ease-out flex flex-col group h-full overflow-hidden relative shadow-sm hover:shadow-2xl hover:-translate-y-2 ${
+    <article 
+      className={`rounded-[2.5rem] border transition-all duration-500 ease-out flex flex-col group h-full overflow-hidden relative shadow-sm hover:shadow-2xl hover:-translate-y-2 focus-within:ring-4 focus-within:ring-blue-500/50 outline-none ${
         isDark 
           ? 'bg-slate-900 border-slate-800 hover:border-blue-900/50 hover:shadow-blue-900/20' 
           : 'bg-white border-slate-200 hover:border-blue-100'
@@ -37,7 +37,7 @@ export const ToolCard: React.FC<ToolCardProps> = ({ tool, onViewDetails, onOpenA
           <div className={`flex items-center gap-1 px-2.5 py-1 rounded-full text-[9px] font-black uppercase tracking-tighter shadow-sm border ${
             isDark ? 'bg-emerald-500/10 border-emerald-500/30 text-emerald-400' : 'bg-emerald-50 border-emerald-100 text-emerald-600'
           }`}>
-            <Unlock size={10} /> Open Source
+            <Unlock size={10} aria-hidden="true" /> Open Source
           </div>
         )}
         <div className={`flex items-center gap-1 px-2.5 py-1 rounded-full text-[9px] font-black uppercase tracking-tighter shadow-sm border ${
@@ -51,30 +51,19 @@ export const ToolCard: React.FC<ToolCardProps> = ({ tool, onViewDetails, onOpenA
 
       <div className="p-8 pt-14 flex-grow">
         <div className="flex flex-col sm:flex-row justify-between items-start gap-6 mb-6">
-          <div className="flex items-center gap-4 w-full">
-            <div className={`w-16 h-16 rounded-2xl p-2.5 flex items-center justify-center shrink-0 border shadow-sm transition-transform group-hover:scale-110 ${
-              isDark ? 'bg-slate-800 border-slate-700' : 'bg-slate-50 border-slate-100'
-            }`}>
-              {tool.logo ? (
-                <img src={tool.logo} alt={`${tool.name} logo`} className="w-full h-full object-contain" />
-              ) : (
-                <Boxes size={28} className="text-blue-500" />
-              )}
-            </div>
-            <div className="flex flex-col gap-1 w-full">
-              <h3 className={`text-xl font-extrabold tracking-tight break-words group-hover:text-blue-500 transition-colors leading-tight ${isDark ? 'text-white' : 'text-slate-900'}`}>
-                {tool.name}
-              </h3>
-              <span className="text-[10px] font-black text-slate-500 uppercase tracking-widest leading-none">{tool.category}</span>
-            </div>
+          <div className="flex flex-col gap-1.5 w-full">
+            <h3 className={`text-xl font-extrabold tracking-tight break-words group-hover:text-blue-500 transition-colors leading-tight ${isDark ? 'text-white' : 'text-slate-900'}`}>
+              {tool.name}
+            </h3>
+            <span className="text-[10px] font-black text-slate-500 uppercase tracking-widest leading-none">{tool.category}</span>
           </div>
           <div className="flex gap-2">
             <button 
               onClick={() => { onSpeak(`Viewing details for ${tool.name}`); onViewDetails(tool); }}
-              className={`p-2.5 rounded-xl transition-all shadow-sm border ${isDark ? 'bg-slate-800 text-blue-400 border-slate-700 hover:bg-slate-700' : 'bg-blue-50 text-blue-600 border-blue-100 hover:bg-blue-100'}`}
-              aria-label="Quick View"
+              className={`p-2.5 rounded-xl transition-all shadow-sm border focus:ring-2 focus:ring-blue-500 outline-none ${isDark ? 'bg-slate-800 text-blue-400 border-slate-700 hover:bg-slate-700' : 'bg-blue-50 text-blue-600 border-blue-100 hover:bg-blue-100'}`}
+              aria-label={`View details for ${tool.name}`}
             >
-              <Eye size={20} />
+              <Eye size={20} aria-hidden="true" />
             </button>
           </div>
         </div>
@@ -95,9 +84,10 @@ export const ToolCard: React.FC<ToolCardProps> = ({ tool, onViewDetails, onOpenA
       <div className="p-8 pt-0 mt-auto flex flex-col gap-3">
         <button 
           onClick={() => { onSpeak(`Accessing Agent Strategy for ${tool.name}`); onOpenAgent(tool); }}
-          className="w-full bg-blue-600 text-white py-4 rounded-2xl font-black text-sm flex items-center justify-center gap-3 hover:bg-blue-500 transition-all shadow-xl active:scale-95"
+          className="w-full bg-blue-600 text-white py-4 rounded-2xl font-black text-sm flex items-center justify-center gap-3 hover:bg-blue-500 transition-all shadow-xl active:scale-95 focus:ring-4 focus:ring-blue-500/50 outline-none"
+          aria-label={`Open Agent Blueprint for ${tool.name}`}
         >
-          <BrainCircuit size={18} />
+          <BrainCircuit size={18} aria-hidden="true" />
           Agent Blueprint
         </button>
         
@@ -107,25 +97,26 @@ export const ToolCard: React.FC<ToolCardProps> = ({ tool, onViewDetails, onOpenA
             target="_blank" 
             rel="noopener noreferrer"
             onClick={() => onSpeak(`Visiting official site`)}
-            className={`flex-grow text-center py-3 rounded-2xl text-[11px] font-black flex items-center justify-center gap-2 border transition-all shadow-sm ${
-              isDark ? 'bg-slate-800 border-slate-700 text-slate-400 hover:text-white' : 'bg-slate-50 border-slate-200 text-slate-500 hover:text-blue-600'
+            className={`flex-grow text-center py-3 rounded-2xl text-[11px] font-black flex items-center justify-center gap-2 border transition-all shadow-sm focus:ring-4 outline-none ${
+              isDark ? 'bg-slate-800 border-slate-700 text-slate-400 hover:text-white ring-blue-600/50' : 'bg-slate-50 border-slate-200 text-slate-500 hover:text-blue-600 ring-blue-500/50'
             }`}
+            aria-label={`Visit official website for ${tool.name}`}
           >
-            Visit <ExternalLink size={14} />
+            Visit <ExternalLink size={14} aria-hidden="true" />
           </a>
           <button 
             onClick={copyUrl}
-            className={`p-3 rounded-2xl border transition-all shadow-sm ${
+            className={`p-3 rounded-2xl border transition-all shadow-sm focus:ring-4 outline-none ${
               copied 
-                ? 'bg-emerald-600 border-emerald-600 text-white' 
-                : isDark ? 'bg-slate-800 border-slate-700 text-slate-400 hover:text-white' : 'bg-slate-50 border-slate-100 text-slate-400 hover:text-blue-600'
+                ? 'bg-emerald-600 border-emerald-600 text-white ring-emerald-500/50' 
+                : isDark ? 'bg-slate-800 border-slate-700 text-slate-400 hover:text-white ring-blue-600/50' : 'bg-slate-50 border-slate-100 text-slate-400 hover:text-blue-600 ring-blue-500/50'
             }`}
-            aria-label="Copy Link"
+            aria-label={`Copy link for ${tool.name}`}
           >
-            {copied ? <Check size={16} /> : <Copy size={16} />}
+            {copied ? <Check size={16} aria-hidden="true" /> : <Copy size={16} aria-hidden="true" />}
           </button>
         </div>
       </div>
-    </div>
+    </article>
   );
 };

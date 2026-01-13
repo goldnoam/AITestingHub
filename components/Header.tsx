@@ -8,15 +8,15 @@ interface HeaderProps {
 
 export const Header: React.FC<HeaderProps> = ({ t }) => {
   return (
-    <header className="bg-slate-900 text-white py-12 px-6 relative overflow-hidden dark:bg-black">
-      <div className="absolute top-0 right-0 p-8 opacity-10 pointer-events-none">
+    <header className="bg-slate-900 text-white py-12 px-6 relative overflow-hidden dark:bg-black" role="banner">
+      <div className="absolute top-0 right-0 p-8 opacity-10 pointer-events-none" aria-hidden="true">
         <Cpu size={240} />
       </div>
       <div className="max-w-6xl mx-auto relative z-10">
         <div className="flex justify-between items-start mb-4">
           <div className="flex items-center gap-3">
             <div className="bg-blue-600 p-2 rounded-lg">
-              <Bot size={32} />
+              <Bot size={32} aria-hidden="true" />
             </div>
             <span className="text-blue-500 font-bold tracking-widest text-sm uppercase">Industry Resource</span>
           </div>
