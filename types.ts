@@ -8,6 +8,9 @@ export enum ToolCategory {
   WEB_MOBILE = 'Web & Mobile Agents'
 }
 
+export type Language = 'en' | 'he' | 'zh' | 'hi' | 'de' | 'es' | 'fr';
+export type FontSize = 'sm' | 'md' | 'lg';
+
 export interface Tool {
   id: string;
   name: string;
@@ -29,4 +32,10 @@ export interface FilterState {
   category: ToolCategory | 'All';
   pricing: 'All' | 'Free/OS' | 'Paid';
   selectedTags: string[];
+}
+
+export interface AppSettings {
+  theme: 'light' | 'dark';
+  language: Language;
+  fontSize: FontSize;
 }

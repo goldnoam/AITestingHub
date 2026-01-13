@@ -1,31 +1,61 @@
 
-import React, { useState, useMemo } from 'react';
+import React, { useState, useMemo, useEffect, useCallback } from 'react';
 import { Header } from './components/Header';
 import { FilterBar } from './components/FilterBar';
 import { ToolCard } from './components/ToolCard';
 import { DetailedModal } from './components/DetailedModal';
 import { AgentModal } from './components/AgentModal';
-import { InfographicSummary } from './components/InfographicSummary';
 import { TOOLS } from './data';
-import { FilterState, Tool } from './types';
-import { LayoutGrid, AlertCircle, Linkedin, Sparkles, Bot, Mail } from 'lucide-react';
+import { FilterState, Tool, Language, FontSize, AppSettings } from './types';
+import { LayoutGrid, AlertCircle, Linkedin, Github, Twitter, Sparkles, Bot, Mail, Sun, Moon, Type, Globe } from 'lucide-react';
+
+const TRANSLATIONS: Record<Language, any> = {
+  en: { title: "The AI Testers", subtitle: "Tools Summary", explorer: "Tool Explorer", reset: "Reset All Parameters", found: "Resources Found", feedback: "SEND FEEDBACK", copyright: "(C) Noam Gold AI 2026" },
+  he: { title: "כלי הבדיקה של ה-AI", subtitle: "סיכום כלים", explorer: "סייר הכלים", reset: "אפס את כל הפרמטרים", found: "משאבים נמצאו", feedback: "שלח משוב", copyright: "(C) נועם גולד AI 2026" },
+  zh: { title: "人工智能测试员", subtitle: "工具摘要", explorer: "工具资源管理器", reset: "重置所有参数", found: "找到的资源", feedback: "发送反馈", copyright: "(C) 诺姆·戈尔德 AI 2026" },
+  hi: { title: "AI टेस्टर टूल्स", subtitle: "सारांश", explorer: "टूल एक्सप्लोरर", reset: "सभी पैरामीटर रीसेट करें", found: "संसाधन मिले", feedback: "प्रतिक्रिया भेजें", copyright: "(C) नोम गोल्ड AI 2026" },
+  de: { title: "Die AI Tester", subtitle: "Tool-Zusammenfassung", explorer: "Tool-Explorer", reset: "Alle Parameter zurücksetzen", found: "Ressourcen gefunden", feedback: "FEEDBACK SENDEN", copyright: "(C) Noam Gold AI 2026" },
+  es: { title: "Los AI Testers", subtitle: "Resumen de Herramientas", explorer: "Explorador de Herramientas", reset: "Restablecer todos los parámetros", found: "Recursos encontrados", feedback: "ENVIAR COMENTARIOS", copyright: "(C) Noam Gold AI 2026" },
+  fr: { title: "Les Testeurs AI", subtitle: "Résumé des Outils", explorer: "Explorateur d'Outils", reset: "Réinitialiser tous les paramètres", found: "Ressources trouvées", feedback: "ENVOYER UN COMMENTAIRE", copyright: "(C) Noam Gold AI 2026" },
+};
 
 const App: React.FC = () => {
+  const [settings, setSettings] = useState<AppSettings>(() => {
+    const saved = localStorage.getItem('tester-hub-settings');
+    try {
+      if (saved) {
+        return JSON.parse(saved);
+      }
+    } catch (e) {
+      console.error("Failed to parse settings from localStorage", e);
+    }
+    return { theme: 'dark', language: 'en', fontSize: 'md' };
+  });
+
   const [filters, setFilters] = useState<FilterState>({
     search: '',
     category: 'All',
     pricing: 'All',
     selectedTags: [],
   });
+  
   const [detailsTool, setDetailsTool] = useState<Tool | null>(null);
   const [agentTool, setAgentTool] = useState<Tool | null>(null);
+
+  useEffect(() => {
+    localStorage.setItem('tester-hub-settings', JSON.stringify(settings));
+    document.documentElement.className = settings.theme;
+    document.documentElement.dir = settings.language === 'he' ? 'rtl' : 'ltr';
+    document.documentElement.lang = settings.language;
+    document.body.className = settings.theme === 'dark' ? 'bg-slate-950' : 'bg-slate-50';
+  }, [settings]);
+
+  const t = TRANSLATIONS[settings.language];
 
   const filteredTools = useMemo(() => {
     return TOOLS.filter(tool => {
       const searchLower = filters.search.toLowerCase();
-      
-      const matchesSearch = 
-        !filters.search ||
+      const matchesSearch = !filters.search ||
         tool.name.toLowerCase().includes(searchLower) ||
         tool.description.toLowerCase().includes(searchLower) ||
         tool.agentStrategy.toLowerCase().includes(searchLower) ||
@@ -33,63 +63,90 @@ const App: React.FC = () => {
         tool.tags.some(tag => tag.toLowerCase().includes(searchLower));
       
       const matchesCategory = filters.category === 'All' || tool.category === filters.category;
-      
-      const matchesPricing = 
-        filters.pricing === 'All' || 
+      const matchesPricing = filters.pricing === 'All' || 
         (filters.pricing === 'Free/OS' && tool.isOpenSource) ||
         (filters.pricing === 'Paid' && tool.isPaid);
 
-      const matchesTags = 
-        filters.selectedTags.length === 0 || 
-        filters.selectedTags.every(tag => 
-          tool.tags.includes(tag) || tool.frameworks.includes(tag)
-        );
+      const matchesTags = filters.selectedTags.length === 0 || 
+        filters.selectedTags.every(tag => tool.tags.includes(tag) || tool.frameworks.includes(tag));
 
       return matchesSearch && matchesCategory && matchesPricing && matchesTags;
     });
   }, [filters]);
 
-  const handleRelatedToolClick = (tool: Tool) => {
-    setDetailsTool(tool);
-  };
+  const handleSpeak = useCallback((text: string) => {
+    const utterance = new SpeechSynthesisUtterance(text);
+    utterance.lang = settings.language;
+    window.speechSynthesis.speak(utterance);
+  }, [settings.language]);
 
-  const handleOpenAgent = (tool: Tool) => {
-    setAgentTool(tool);
-  };
+  const toggleTheme = () => setSettings(s => ({ ...s, theme: s.theme === 'light' ? 'dark' : 'light' }));
+  const changeFontSize = (size: FontSize) => setSettings(s => ({ ...s, fontSize: size }));
+  const changeLanguage = (lang: Language) => setSettings(s => ({ ...s, language: lang }));
+
+  const fontClass = settings.fontSize === 'sm' ? 'text-sm' : settings.fontSize === 'lg' ? 'text-lg' : 'text-base';
 
   return (
-    <div className="min-h-screen pb-20 bg-[#fafafa]">
-      <Header />
-      
-      <div className="pt-12">
-        <InfographicSummary />
+    <div className={`min-h-screen pb-20 transition-colors duration-300 ${fontClass} ${settings.theme === 'dark' ? 'bg-slate-950 text-slate-100' : 'bg-slate-50 text-slate-900'}`}>
+      <div className="fixed top-4 right-4 z-50 flex gap-2">
+        <button 
+          onClick={() => { handleSpeak('Changing theme'); toggleTheme(); }} 
+          className="p-2 bg-white/10 backdrop-blur rounded-full border border-white/20 hover:bg-white/20 transition-all shadow-lg"
+          aria-label="Toggle Theme"
+        >
+          {settings.theme === 'light' ? <Moon size={20} /> : <Sun size={20} />}
+        </button>
+        
+        <div className="relative group">
+          <button className="p-2 bg-white/10 backdrop-blur rounded-full border border-white/20 hover:bg-white/20 transition-all shadow-lg" aria-label="Font Size">
+            <Type size={20} />
+          </button>
+          <div className="absolute top-full right-0 mt-2 bg-slate-800 rounded-xl border border-slate-700 p-2 hidden group-hover:flex flex-col gap-1 shadow-2xl">
+            {(['sm', 'md', 'lg'] as FontSize[]).map(size => (
+              <button key={size} onClick={() => changeFontSize(size)} className={`px-4 py-1.5 rounded-lg text-xs font-black uppercase tracking-widest ${settings.fontSize === size ? 'bg-blue-600 text-white' : 'text-slate-300 hover:bg-slate-700'}`}>
+                {size}
+              </button>
+            ))}
+          </div>
+        </div>
+
+        <div className="relative group">
+          <button className="p-2 bg-white/10 backdrop-blur rounded-full border border-white/20 hover:bg-white/20 transition-all shadow-lg" aria-label="Language Selector">
+            <Globe size={20} />
+          </button>
+          <div className="absolute top-full right-0 mt-2 bg-slate-800 rounded-xl border border-slate-700 p-2 hidden group-hover:grid grid-cols-2 gap-1 shadow-2xl min-w-[160px]">
+            {(['en', 'he', 'zh', 'hi', 'de', 'es', 'fr'] as Language[]).map(lang => (
+              <button key={lang} onClick={() => changeLanguage(lang)} className={`px-3 py-1.5 rounded-lg text-[10px] font-black uppercase tracking-tighter ${settings.language === lang ? 'bg-blue-600 text-white' : 'text-slate-300 hover:bg-slate-700'}`}>
+                {lang}
+              </button>
+            ))}
+          </div>
+        </div>
       </div>
 
+      <Header t={t} />
+      
       <FilterBar 
         filters={filters} 
         onFilterChange={setFilters} 
+        filteredTools={filteredTools}
+        settings={settings}
       />
 
       <main className="max-w-6xl mx-auto px-6 py-12">
         <div className="flex flex-col md:flex-row md:items-center justify-between gap-4 mb-12">
           <div className="flex items-center gap-4">
-            <div className="bg-white p-2.5 rounded-2xl shadow-sm border border-slate-200">
-              <LayoutGrid size={24} className="text-blue-600" />
+            <div className={`p-2.5 rounded-2xl shadow-sm border ${settings.theme === 'dark' ? 'bg-slate-900 border-slate-800' : 'bg-white border-slate-200'}`}>
+              <LayoutGrid size={24} className="text-blue-500" />
             </div>
             <div>
-              <h2 className="text-2xl font-black text-slate-900 tracking-tight">Tool Explorer</h2>
+              <h2 className="text-2xl font-black tracking-tight">{t.explorer}</h2>
               <div className="flex items-center gap-2">
-                <div className={`w-2 h-2 rounded-full ${filteredTools.length > 0 ? 'bg-emerald-500' : 'bg-slate-300'}`} />
+                <div className={`w-2 h-2 rounded-full ${filteredTools.length > 0 ? 'bg-emerald-500' : 'bg-slate-500'}`} />
                 <span className="text-slate-500 text-[10px] font-black uppercase tracking-widest">
-                  {filteredTools.length} Resources Found
+                  {filteredTools.length} {t.found}
                 </span>
               </div>
-            </div>
-          </div>
-          
-          <div className="flex items-center gap-3">
-            <div className="hidden lg:flex items-center gap-2 px-4 py-2 bg-blue-50 text-blue-700 rounded-xl text-[10px] font-black uppercase border border-blue-100">
-               <Sparkles size={14} /> AI Testing Directory
             </div>
           </div>
         </div>
@@ -101,25 +158,25 @@ const App: React.FC = () => {
                 key={tool.id} 
                 tool={tool} 
                 onViewDetails={setDetailsTool}
-                onOpenAgent={handleOpenAgent}
+                onOpenAgent={setAgentTool}
+                onSpeak={handleSpeak}
+                theme={settings.theme}
               />
             ))}
           </div>
         ) : (
-          <div className="bg-white rounded-[3rem] p-20 text-center border border-slate-200 shadow-sm">
+          <div className={`rounded-[3rem] p-20 text-center border shadow-sm ${settings.theme === 'dark' ? 'bg-slate-900 border-slate-800' : 'bg-white border-slate-200'}`}>
             <div className="flex flex-col items-center max-w-sm mx-auto">
-              <div className="bg-slate-50 p-8 rounded-full mb-6">
-                <AlertCircle size={56} className="text-slate-200" />
+              <div className={`p-8 rounded-full mb-6 ${settings.theme === 'dark' ? 'bg-slate-800' : 'bg-slate-50'}`}>
+                <AlertCircle size={56} className="text-slate-600" />
               </div>
-              <h3 className="text-2xl font-black text-slate-800 mb-2 tracking-tight">Zero tools found</h3>
-              <p className="text-slate-500 text-sm mb-10 font-medium leading-relaxed">
-                No tools match all your specific filter criteria. Try removing some tags or choosing a broader category.
-              </p>
+              <h3 className="text-2xl font-black mb-2 tracking-tight">Zero tools found</h3>
+              <p className="text-slate-500 text-sm mb-10 font-medium leading-relaxed">No matches for current filters.</p>
               <button 
                 onClick={() => setFilters({ search: '', category: 'All', pricing: 'All', selectedTags: [] })}
-                className="bg-slate-900 text-white px-10 py-4 rounded-2xl font-black text-sm shadow-2xl shadow-slate-200 hover:bg-slate-800 transition-all active:scale-95"
+                className="bg-blue-600 text-white px-10 py-4 rounded-2xl font-black text-sm shadow-xl hover:bg-blue-500 transition-all active:scale-95"
               >
-                Reset All Parameters
+                {t.reset}
               </button>
             </div>
           </div>
@@ -127,29 +184,36 @@ const App: React.FC = () => {
       </main>
 
       <footer className="max-w-6xl mx-auto px-6 pt-20">
-        <div className="flex flex-col md:flex-row items-center justify-between gap-8 pb-12 border-t border-slate-200 pt-16">
+        <div className={`flex flex-col md:flex-row items-center justify-between gap-8 pb-12 border-t pt-16 ${settings.theme === 'dark' ? 'border-slate-800' : 'border-slate-200'}`}>
           <div className="flex items-center gap-3">
-             <div className="bg-blue-600 p-2 rounded-xl text-white shadow-lg shadow-blue-100">
+             <div className="bg-blue-600 p-2 rounded-xl text-white shadow-lg">
                 <Bot size={24} />
              </div>
              <div>
-                <h4 className="font-black text-slate-900 text-sm">Tester Tools Hub</h4>
-                <p className="text-[10px] font-bold text-slate-400 uppercase tracking-widest">Version 2.0 - Active Reference</p>
+                <h4 className="font-black text-sm">Tester Tools Hub</h4>
+                <p className="text-[10px] font-bold text-slate-500 uppercase tracking-widest">Version 2.0 - Active Reference</p>
              </div>
           </div>
+          
           <div className="flex flex-col items-center gap-2">
-            <p className="text-slate-500 text-xs font-black uppercase tracking-widest opacity-60">
-              (C) Noam Gold AI 2025
+            <p className="text-slate-500 text-xs font-black uppercase tracking-widest opacity-80">
+              {t.copyright}
             </p>
-            <a 
-              href="mailto:goldnoamai@gmail.com" 
-              className="flex items-center gap-1.5 text-blue-600 text-[10px] font-black hover:underline tracking-widest"
-            >
-              <Mail size={12} /> SEND FEEDBACK: goldnoamai@gmail.com
-            </a>
+            <div className="flex items-center gap-4">
+              <a href="mailto:goldnoamai@gmail.com" className="flex items-center gap-1.5 text-blue-500 text-[10px] font-black hover:underline tracking-widest uppercase">
+                <Mail size={12} /> {t.feedback}: goldnoamai@gmail.com
+              </a>
+            </div>
           </div>
+
           <div className="flex gap-4">
-            <a href="https://www.linkedin.com/in/noamgold/" target="_blank" rel="noopener noreferrer" className="p-3 bg-white border border-slate-200 rounded-2xl text-slate-500 hover:text-blue-600 transition-all hover:-translate-y-1 shadow-sm">
+            <a href="https://github.com" target="_blank" rel="noopener noreferrer" className={`p-3 border rounded-2xl transition-all hover:-translate-y-1 shadow-sm ${settings.theme === 'dark' ? 'bg-slate-900 border-slate-800 text-slate-400 hover:text-white' : 'bg-white border-slate-200 text-slate-500 hover:text-blue-600'}`}>
+              <Github size={20} />
+            </a>
+            <a href="https://x.com" target="_blank" rel="noopener noreferrer" className={`p-3 border rounded-2xl transition-all hover:-translate-y-1 shadow-sm ${settings.theme === 'dark' ? 'bg-slate-900 border-slate-800 text-slate-400 hover:text-white' : 'bg-white border-slate-200 text-slate-500 hover:text-blue-600'}`}>
+              <Twitter size={20} />
+            </a>
+            <a href="https://www.linkedin.com/in/noamgold/" target="_blank" rel="noopener noreferrer" className={`p-3 border rounded-2xl transition-all hover:-translate-y-1 shadow-sm ${settings.theme === 'dark' ? 'bg-slate-900 border-slate-800 text-slate-400 hover:text-white' : 'bg-white border-slate-200 text-slate-500 hover:text-blue-600'}`}>
               <Linkedin size={20} />
             </a>
           </div>
@@ -159,12 +223,17 @@ const App: React.FC = () => {
       <DetailedModal 
         tool={detailsTool} 
         onClose={() => setDetailsTool(null)} 
-        onRelatedToolClick={handleRelatedToolClick}
+        onRelatedToolClick={setDetailsTool}
+        onSpeak={handleSpeak}
+        theme={settings.theme}
+        t={t}
       />
 
       <AgentModal 
         tool={agentTool}
         onClose={() => setAgentTool(null)}
+        onSpeak={handleSpeak}
+        theme={settings.theme}
       />
     </div>
   );
