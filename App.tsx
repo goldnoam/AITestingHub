@@ -139,7 +139,7 @@ const App: React.FC = () => {
       />
 
       <main id="main-content" className="max-w-6xl mx-auto px-6 py-12">
-        <AdBanner slot="header-ad" className="mb-12" />
+        <AdBanner slot="header-ad" theme={settings.theme} className="mb-12" />
 
         <div className="flex flex-col md:flex-row md:items-center justify-between gap-4 mb-12">
           <div className="flex items-center gap-4">
@@ -172,7 +172,7 @@ const App: React.FC = () => {
                 />
               ))}
             </div>
-            <AdBanner slot="footer-ad" className="mt-20" />
+            <AdBanner slot="footer-ad" theme={settings.theme} className="mt-20" />
           </>
         ) : (
           <div className={`rounded-[3rem] p-20 text-center border shadow-sm ${settings.theme === 'dark' ? 'bg-slate-900 border-slate-800' : 'bg-white border-slate-200'}`} role="alert">
