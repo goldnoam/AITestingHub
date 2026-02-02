@@ -17,6 +17,20 @@ export const TOOLS: Tool[] = [
     version: 'v1.0'
   },
   {
+    id: 'playwright-base',
+    name: 'Playwright (by Microsoft)',
+    category: ToolCategory.AUTOMATION,
+    description: 'A modern, high-performance end-to-end testing framework that enables reliable cross-browser testing. It features auto-waiting, network interception, and a powerful trace viewer for debugging.',
+    url: 'https://playwright.dev/',
+    howToUse: 'Install via npm init playwright@latest. Use the Test Generator to record scripts or write them in TypeScript/JS using the Page Object Model.',
+    frameworks: ['TypeScript', 'JavaScript', 'Python', 'Java', '.NET'],
+    tags: ['E2E', 'Web', 'Fast', 'Auto-wait', 'Modern', 'Open Source'],
+    isPaid: false,
+    isOpenSource: true,
+    agentStrategy: 'Use Playwright as the "Execution Engine" for an AI agent. Integrate with LLM wrappers like ZeroStep to convert natural language commands directly into Playwright actions, allowing for highly resilient and adaptive test scripts.',
+    version: 'v1.44.0'
+  },
+  {
     id: 'chromatic',
     name: 'Chromatic',
     category: ToolCategory.VISUAL,
@@ -141,20 +155,6 @@ export const TOOLS: Tool[] = [
     isOpenSource: true,
     agentStrategy: 'Use Selenium as the foundation for an AI agent by wrapping its locator strategies with an LLM that can heal broken selectors in real-time.',
     version: '4.21.0'
-  },
-  {
-    id: 'playwright-base',
-    name: 'Playwright',
-    category: ToolCategory.AUTOMATION,
-    description: 'Modern end-to-end testing for modern web apps. Fast, reliable, and capable of testing across all modern engines.',
-    url: 'https://playwright.dev/',
-    howToUse: 'Use the Playwright CLI to generate tests or script them in TypeScript/JS. Use auto-waiting for stable execution.',
-    frameworks: ['TypeScript', 'JavaScript', 'Python', 'Java'],
-    tags: ['Traditional', 'Web', 'Fast', 'Auto-wait', 'Modern'],
-    isPaid: false,
-    isOpenSource: true,
-    agentStrategy: 'Integrate with ZeroStep or similar AI wrappers to turn Playwright scripts into natural language agents that adapt to UI changes.',
-    version: '1.44.0'
   },
   {
     id: 'cypress-base',
