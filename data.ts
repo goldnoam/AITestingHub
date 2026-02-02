@@ -407,5 +407,33 @@ export const TOOLS: Tool[] = [
     isOpenSource: false,
     agentStrategy: 'Enable the "Mabl Autopilot" which uses AI to automatically crawl your application and generate a baseline functional test suite without any manual input.',
     version: 'v2024.4'
+  },
+  {
+    id: 'jmeter-perf',
+    name: 'Apache JMeter',
+    category: ToolCategory.UTILITIES,
+    description: 'The industry standard for open-source performance and load testing. Designed to measure performance and load test functional behavior across a wide variety of protocols.',
+    url: 'https://jmeter.apache.org/',
+    howToUse: 'Define thread groups and samplers in the GUI to simulate user load. Execute in non-GUI mode for heavy load tests to collect performance metrics.',
+    frameworks: ['Java', 'Groovy', 'HTTP/HTTPS', 'FTP', 'JDBC'],
+    tags: ['Performance', 'Load Testing', 'Open Source', 'Traditional', 'Protocol-level'],
+    isPaid: false,
+    isOpenSource: true,
+    agentStrategy: 'Use an AI agent to analyze JMeter result logs (.jtl) to correlate response time spikes with infrastructure resource metrics, automating the root cause analysis of performance degradation.',
+    version: 'v5.6.3'
+  },
+  {
+    id: 'ranorex-enterprise',
+    name: 'Ranorex Studio (RX)',
+    category: ToolCategory.AUTOMATION,
+    description: 'A robust all-in-one tool for test automation of desktop, web, and mobile apps. Features a best-in-class object recognition engine and low-code recording tools.',
+    url: 'https://www.ranorex.com/',
+    howToUse: 'Utilize the Ranorex Spy to capture UI elements. Build modular test cases using the Drag & Drop interface or code in C#/.NET for complex logic.',
+    frameworks: ['.NET', 'C#', 'Windows', 'Web', 'Mobile'],
+    tags: ['Low-code', 'Enterprise', 'Windows Automation', 'Desktop', 'Cross-platform'],
+    isPaid: true,
+    isOpenSource: false,
+    agentStrategy: 'Integrate an AI agent with Ranorex Studio to automatically generate C# user-code modules from natural language descriptions of business requirements.',
+    version: 'v11.1'
   }
 ];
